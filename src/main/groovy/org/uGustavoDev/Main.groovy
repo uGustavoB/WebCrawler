@@ -7,8 +7,8 @@ class Main {
     static void main(String[] args) {
         WebCrawler webCrawler = new WebCrawler()
 
-        Document documentoTiss = webCrawler.acessarTiss()
+        String link = webCrawler.getLinkComponenteComunicacao()
 
-        println documentoTiss.title()
+        println link
     }
 }

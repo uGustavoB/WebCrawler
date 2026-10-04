@@ -15,14 +15,35 @@ class WebCrawler {
     }
 
     Document acessarEspacoPrestador() {
-        Document docAns = getDocumento()
-        String linkEspacoPrestador = getLink(docAns, "Espaço do Prestador de Serviços de Saúde")
-        return Jsoup.connect(linkEspacoPrestador).get()
+        Document documento = getDocumento()
+        String link = getLink(documento, "Espaço do Prestador de Serviços de Saúde")
+
+        return Jsoup.connect(link).get()
     }
 
     Document acessarTiss() {
-        Document docPrestadores = acessarEspacoPrestador()
-        String linkTiss = getLink(docPrestadores, "TISS - Padrão para Troca de Informação de Saúde Suplementar")
-        return Jsoup.connect(linkTiss).get()
+        Document documento = acessarEspacoPrestador()
+        String link = getLink(
+                documento,
+                "TISS - Padrão para Troca de Informação de Saúde Suplementar"
+        )
+
+        return Jsoup.connect(link).get()
+    }
+
+    Document acessarPadraoTiss() {
+        Document documento = acessarTiss()
+        String link = getLink(documento, "Clique aqui para acessar a versão Setembro/2026")
+
+        return Jsoup.connect(link).get()
+    }
+
+    String getLinkComponenteComunicacao() {
+        Document documento = acessarPadraoTiss()
+
+        return getLink(
+                documento,
+                "Componente de Comunicação"
+        )
     }
 }
