@@ -16,12 +16,23 @@ class WebCrawler {
     }
 
     String getLink(Document documento, String text) {
-        return documento.select("a:contains($text)").first().absUrl("href")
+        Element elemento = documento.select("a:contains($text)").first()
+
+        if (elemento == null) {
+            throw new IllegalStateException(
+                    "Link não encontrado para o texto: $text"
+            )
+        }
+
+        return elemento.absUrl("href")
     }
 
     Document acessarEspacoPrestador() {
         Document documento = getDocumento()
-        String link = getLink(documento, "Espaço do Prestador de Serviços de Saúde")
+        String link = getLink(
+                documento,
+                "Espaço do Prestador de Serviços de Saúde"
+        )
 
         return Jsoup.connect(link).get()
     }
@@ -44,12 +55,21 @@ class WebCrawler {
     }
 
     String getLinkVersaoMaisRecente(Document documento) {
-        return documento
+        Element elemento = documento
                 .select("a")
                 .find { Element link ->
-                    link.text().startsWith("Clique aqui para acessar a versão")
+                    link.text().startsWith(
+                            "Clique aqui para acessar a versão"
+                    )
                 }
-                .absUrl("href")
+
+        if (elemento == null) {
+            throw new IllegalStateException(
+                    "Nenhuma versão do TISS foi encontrada"
+            )
+        }
+
+        return elemento.absUrl("href")
     }
 
     String getLinkComponenteComunicacao() {
