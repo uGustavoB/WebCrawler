@@ -4,6 +4,7 @@ import groovyx.net.http.HttpBuilder
 import groovyx.net.http.optional.Download
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import org.jsoup.nodes.Element
 
 class WebCrawler {
 
@@ -37,12 +38,18 @@ class WebCrawler {
 
     Document acessarPadraoTiss() {
         Document documento = acessarTiss()
-        String link = getLink(
-                documento,
-                "Clique aqui para acessar a versão Setembro/2026"
-        )
+        String link = getLinkVersaoMaisRecente(documento)
 
         return Jsoup.connect(link).get()
+    }
+
+    String getLinkVersaoMaisRecente(Document documento) {
+        return documento
+                .select("a")
+                .find { Element link ->
+                    link.text().startsWith("Clique aqui para acessar a versão")
+                }
+                .absUrl("href")
     }
 
     String getLinkComponenteComunicacao() {
