@@ -1,10 +1,14 @@
 package org.uGustavoDev.crawler
 
+import groovyx.net.http.HttpBuilder
+import groovyx.net.http.optional.Download
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 
 class WebCrawler {
-    String URL  = "https://www.gov.br/ans/pt-br"
+
+    final String URL = "https://www.gov.br/ans/pt-br"
+    final String PATH = "downloads"
 
     Document getDocumento() {
         return Jsoup.connect(URL).get()
@@ -33,7 +37,10 @@ class WebCrawler {
 
     Document acessarPadraoTiss() {
         Document documento = acessarTiss()
-        String link = getLink(documento, "Clique aqui para acessar a versão Setembro/2026")
+        String link = getLink(
+                documento,
+                "Clique aqui para acessar a versão Setembro/2026"
+        )
 
         return Jsoup.connect(link).get()
     }
@@ -45,5 +52,28 @@ class WebCrawler {
                 documento,
                 "Componente de Comunicação"
         )
+    }
+
+    void baixarDocumentoDeComunicacao() {
+        String link = getLinkComponenteComunicacao()
+
+        File pasta = new File(PATH)
+
+        if (!pasta.exists()) {
+            pasta.mkdirs()
+        }
+
+        File arquivo = new File(
+                pasta,
+                "componente_comunicacao.zip"
+        )
+
+        HttpBuilder.configure {
+            request.uri = link
+        }.get {
+            Download.toFile(delegate, arquivo)
+        }
+
+        println "Arquivo baixado com sucesso: ${arquivo.path}"
     }
 }
