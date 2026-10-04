@@ -9,5 +9,6 @@ class Main {
 
         webCrawler.baixarDocumentoDeComunicacao() // Tarefa 1
         webCrawler.obterHistoricoTiss() // Tarefa 2
+        webCrawler.baixarTabelaDeErros() // Tarefa 3
     }
 }

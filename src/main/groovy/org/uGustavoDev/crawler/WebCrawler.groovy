@@ -219,4 +219,47 @@ class WebCrawler {
                 "${PATH}/historico_versoes_tiss.csv"
         )
     }
+
+    Document acessarTabelasRelacionadas() {
+        Document documento = acessarTiss()
+
+        String link = getLink(
+                documento,
+                "Clique aqui para acessar as planilhas"
+        )
+
+        return webClient.get(link)
+    }
+
+    String getLinkTabelaErros() {
+        Document documento = acessarTabelasRelacionadas()
+
+        return getLink(
+                documento,
+                "tabela de erros"
+        )
+    }
+
+    void baixarTabelaDeErros() {
+        String link = getLinkTabelaErros()
+
+        File pasta = new File(PATH)
+
+        if (!pasta.exists()) {
+            pasta.mkdirs()
+        }
+
+        File arquivo = new File(
+                pasta,
+                "tabela_de_erros.xlsx"
+        )
+
+        HttpBuilder.configure {
+            request.uri = link
+        }.get {
+            Download.toFile(delegate, arquivo)
+        }
+
+        println "Arquivo baixado com sucesso: ${arquivo.path}"
+    }
 }
