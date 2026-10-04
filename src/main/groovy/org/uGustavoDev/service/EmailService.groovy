@@ -8,17 +8,22 @@ import jakarta.mail.internet.MimeMessage
 import jakarta.mail.Authenticator
 import jakarta.mail.PasswordAuthentication
 import org.uGustavoDev.model.Email
+import org.uGustavoDev.model.SmtpConfig
 
 class EmailService {
 
+    private final SmtpConfig config
+
+    EmailService(SmtpConfig config) {
+        this.config = config
+    }
+
     void enviar(Email email) {
 
-        String remetente = "seu-email@gmail.com"
-        String senha = "sua-senha"
-
         Properties properties = new Properties()
-        properties.put("mail.smtp.host", "smtp.gmail.com")
-        properties.put("mail.smtp.port", "587")
+
+        properties.put("mail.smtp.host", config.host)
+        properties.put("mail.smtp.port", config.port.toString())
         properties.put("mail.smtp.auth", "true")
         properties.put("mail.smtp.starttls.enable", "true")
 
@@ -27,8 +32,8 @@ class EmailService {
                 new Authenticator() {
                     protected PasswordAuthentication getPasswordAuthentication() {
                         return new PasswordAuthentication(
-                                remetente,
-                                senha
+                                config.username,
+                                config.password
                         )
                     }
                 }
@@ -36,11 +41,13 @@ class EmailService {
 
         Message message = new MimeMessage(session)
 
-        message.setFrom(new InternetAddress(remetente))
+        message.setFrom(new InternetAddress(config.remetente))
+
         message.setRecipients(
                 Message.RecipientType.TO,
                 InternetAddress.parse(email.destinatario)
         )
+
         message.setSubject(email.assunto)
         message.setText(email.mensagem)
 

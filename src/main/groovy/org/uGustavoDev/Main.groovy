@@ -3,17 +3,24 @@ package org.uGustavoDev
 
 import org.uGustavoDev.crawler.WebCrawler
 import org.uGustavoDev.model.Email
+import org.uGustavoDev.model.SmtpConfig
 import org.uGustavoDev.service.EmailService
 import org.uGustavoDev.ui.ConsoleUI
 
 class Main {
+
     static void main(String[] args) {
+
+        SmtpConfig config = SmtpConfig.carregar()
+        EmailService emailService = new EmailService(config)
+
         int opcao
 
         do {
             opcao = ConsoleUI.pedirOpcaoPrincipal()
 
             switch (opcao) {
+
                 case 1:
                     println "Download da documentação..."
                     break
@@ -21,7 +28,6 @@ class Main {
                 case 2:
                     Email email = ConsoleUI.pedirEmail()
 
-                    EmailService emailService = new EmailService()
                     emailService.enviar(email)
 
                     ConsoleUI.aguardarContinuacao()
