@@ -8,6 +8,9 @@ import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import org.uGustavoDev.model.VersaoTiss
 
+import java.time.YearMonth
+import java.time.format.DateTimeFormatter
+
 class WebCrawler {
 
     final String URL = "https://www.gov.br/ans/pt-br"
@@ -172,5 +175,41 @@ class WebCrawler {
         }
 
         return indices
+    }
+
+    YearMonth converterCompetencia(String competencia) {
+        def mapMeses = [
+            "jan": "01", "fev": "02", "mar": "03", "abr": "04",
+            "mai": "05", "jun": "06", "jul": "07", "ago": "08",
+            "set": "09", "out": "10", "nov": "11", "dez": "12"
+        ]
+        
+        String normalizada = competencia.toLowerCase().trim()
+        mapMeses.each { key, value ->
+            if (normalizada.startsWith(key)) {
+                normalizada = normalizada.replaceFirst(key + "[a-z]*", value)
+            }
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/yyyy")
+        return YearMonth.parse(normalizada, formatter)
+    }
+
+    List<VersaoTiss> filtrarVersoesDesde2016(List<VersaoTiss> versoes) {
+        YearMonth inicio = YearMonth.of(2016, 1)
+
+        return versoes.findAll { VersaoTiss versao ->
+            converterCompetencia(versao.competencia) >= inicio
+        }
+    }
+
+    void obterHistoricoTiss() {
+        List<VersaoTiss> versoes = extrairVersoesTiss()
+
+        List<VersaoTiss> versoesFiltradas = filtrarVersoesDesde2016(versoes)
+
+        versoesFiltradas.each { VersaoTiss versao ->
+            println "${versao.competencia} | ${versao.publicacao} | ${versao.inicioVigencia}"
+        }
     }
 }
