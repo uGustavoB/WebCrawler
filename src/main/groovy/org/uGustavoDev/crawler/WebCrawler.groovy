@@ -6,6 +6,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
+import org.uGustavoDev.model.VersaoTiss
 
 class WebCrawler {
 
@@ -124,20 +125,26 @@ class WebCrawler {
         return tabela.select("tbody tr")
     }
 
-    void imprimirDadosHistorico() {
+    List<VersaoTiss> extrairVersoesTiss() {
         Document documento = acessarHistoricoTiss()
 
         Element tabela = getTabelaHistorico(documento)
         Elements linhas = getLinhasTabelaHistorico(tabela)
 
+        List<VersaoTiss> versoes = []
+
         linhas.each { linha ->
             Elements colunas = linha.select("td")
 
-            colunas.each { coluna ->
-                print "${coluna.text()} | "
-            }
+            VersaoTiss versao = new VersaoTiss(
+                    competencia: colunas.get(0).text(),
+                    publicacao: colunas.get(1).text(),
+                    inicioVigencia: colunas.get(2).text()
+            )
 
-            println()
+            versoes.add(versao)
         }
+
+        return versoes
     }
 }
