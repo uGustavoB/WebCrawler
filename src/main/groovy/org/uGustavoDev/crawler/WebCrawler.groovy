@@ -206,7 +206,7 @@ class WebCrawler {
         }
     }
 
-    void obterHistoricoTiss() {
+    File obterHistoricoTiss() {
         List<VersaoTiss> versoes = extrairVersoesTiss()
 
         List<VersaoTiss> versoesFiltradas =
@@ -214,7 +214,7 @@ class WebCrawler {
 
         CsvExporter exporter = new CsvExporter()
 
-        exporter.exportar(
+        return exporter.exportar(
                 versoesFiltradas,
                 "${PATH}/historico_versoes_tiss.csv"
         )

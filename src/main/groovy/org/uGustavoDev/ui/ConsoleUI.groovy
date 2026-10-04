@@ -70,8 +70,8 @@ class ConsoleUI {
         return lerEscolha("Sua escolha: ", 0, 2)
     }
 
-    static Email pedirEmail() {
-        imprimirCabecalho("Configuração de Email")
+    static Email pedirEmailComHistorico(File arquivo) {
+        imprimirCabecalho("Envio do Histórico TISS")
 
         String destinatario = lerTexto("Email do destinatário: ")
         String assunto = lerTexto("Assunto: ")
@@ -80,7 +80,8 @@ class ConsoleUI {
         return new Email(
                 destinatario: destinatario,
                 assunto: assunto,
-                mensagem: mensagem
+                mensagem: mensagem,
+                anexos: [arquivo]
         )
     }
 }

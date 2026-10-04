@@ -1,12 +1,15 @@
 package org.uGustavoDev.service
 
 import jakarta.mail.Message
+import jakarta.mail.Multipart
 import jakarta.mail.Session
 import jakarta.mail.Transport
 import jakarta.mail.internet.InternetAddress
+import jakarta.mail.internet.MimeBodyPart
 import jakarta.mail.internet.MimeMessage
 import jakarta.mail.Authenticator
 import jakarta.mail.PasswordAuthentication
+import jakarta.mail.internet.MimeMultipart
 import org.uGustavoDev.model.Email
 import org.uGustavoDev.model.SmtpConfig
 
@@ -49,7 +52,22 @@ class EmailService {
         )
 
         message.setSubject(email.assunto)
-        message.setText(email.mensagem)
+
+        MimeBodyPart corpo = new MimeBodyPart()
+        corpo.setText(email.mensagem)
+
+        Multipart multipart = new MimeMultipart()
+        multipart.addBodyPart(corpo)
+
+        email.anexos.each { File arquivo ->
+            MimeBodyPart anexo = new MimeBodyPart()
+
+            anexo.attachFile(arquivo)
+
+            multipart.addBodyPart(anexo)
+        }
+
+        message.setContent(multipart)
 
         Transport.send(message)
 

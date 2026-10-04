@@ -4,7 +4,7 @@ import com.opencsv.CSVWriter
 import org.uGustavoDev.model.VersaoTiss
 
 class CsvExporter {
-    void exportar(List<VersaoTiss> versoes, String caminho) {
+    File exportar(List<VersaoTiss> versoes, String caminho) {
         File arquivo = new File(caminho)
 
         File pasta = arquivo.parentFile
@@ -34,5 +34,7 @@ class CsvExporter {
         }
 
         println "Histórico exportado com sucesso: ${arquivo.path}"
+
+        return arquivo
     }
 }

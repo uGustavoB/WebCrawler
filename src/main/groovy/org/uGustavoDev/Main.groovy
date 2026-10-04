@@ -11,6 +11,8 @@ class Main {
 
     static void main(String[] args) {
 
+        WebCrawler webCrawler = new WebCrawler()
+
         SmtpConfig config = SmtpConfig.carregar()
         EmailService emailService = new EmailService(config)
 
@@ -22,11 +24,15 @@ class Main {
             switch (opcao) {
 
                 case 1:
-                    println "Download da documentação..."
+                    webCrawler.baixarDocumentoDeComunicacao()
                     break
 
                 case 2:
-                    Email email = ConsoleUI.pedirEmail()
+                    File arquivoHistorico = webCrawler.obterHistoricoTiss()
+
+                    Email email = ConsoleUI.pedirEmailComHistorico(
+                            arquivoHistorico
+                    )
 
                     emailService.enviar(email)
 
