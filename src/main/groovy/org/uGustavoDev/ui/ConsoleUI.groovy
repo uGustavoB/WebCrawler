@@ -104,8 +104,9 @@ class ConsoleUI {
         println "1 - Listar"
         println "2 - Cadastrar"
         println "3 - Remover"
+        println "4 - Editar"
         println "0 - Voltar"
 
-        return lerEscolha("Sua escolha: ", 0, 3)
+        return lerEscolha("Sua escolha: ", 0, 4)
     }
 }

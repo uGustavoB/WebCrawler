@@ -106,6 +106,23 @@ class Main {
                     println "Interessado removido!"
                     ConsoleUI.aguardarContinuacao()
                     break
+
+                case 4:
+                    String emailOriginal = ConsoleUI.lerTexto("Email para editar: ")
+
+                    println "Digite os novos dados:"
+                    String novoNome = ConsoleUI.lerTexto("Novo Nome: ")
+                    String novoEmail = ConsoleUI.lerTexto("Novo Email: ")
+
+                    try {
+                        service.editar(emailOriginal, new EmailInteressado(nome: novoNome, email: novoEmail))
+                        println "Interessado atualizado com sucesso!"
+                    } catch (IllegalArgumentException e) {
+                        println e.message
+                    }
+
+                    ConsoleUI.aguardarContinuacao()
+                    break
             }
 
         } while (opcao != 0)

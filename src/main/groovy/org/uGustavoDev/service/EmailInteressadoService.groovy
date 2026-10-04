@@ -22,4 +22,8 @@ class EmailInteressadoService {
     void remover(String email) {
         service.remover(email)
     }
+
+    void editar(String emailOriginal, EmailInteressado novosDados) {
+        service.editar(emailOriginal, novosDados)
+    }
 }

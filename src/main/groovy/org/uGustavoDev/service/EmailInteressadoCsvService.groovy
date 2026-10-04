@@ -56,6 +56,24 @@ class EmailInteressadoCsvService {
         salvarTodos(interessados)
     }
 
+    void editar(String emailOriginal, EmailInteressado novosDados) {
+        List<EmailInteressado> interessados = listar()
+
+        def interessado = buscarPorEmail(emailOriginal, interessados)
+        if (interessado == null) {
+            throw new IllegalArgumentException("O email ${emailOriginal} não foi encontrado.")
+        }
+
+        if (!emailOriginal.equalsIgnoreCase(novosDados.email) && buscarPorEmail(novosDados.email, interessados) != null) {
+            throw new IllegalArgumentException("O email ${novosDados.email} já está cadastrado para outro interessado.")
+        }
+
+        interessado.nome = novosDados.nome
+        interessado.email = novosDados.email
+
+        salvarTodos(interessados)
+    }
+
     private void salvarTodos(List<EmailInteressado> interessados) {
         arquivo.parentFile.mkdirs()
 
