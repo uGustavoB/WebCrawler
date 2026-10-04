@@ -6,6 +6,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
+import org.uGustavoDev.client.WebClient
 import org.uGustavoDev.exporter.CsvExporter
 import org.uGustavoDev.model.VersaoTiss
 
@@ -16,9 +17,10 @@ class WebCrawler {
 
     final String URL = "https://www.gov.br/ans/pt-br"
     final String PATH = "downloads"
+    final WebClient webClient = new WebClient()
 
     Document getDocumento() {
-        return Jsoup.connect(URL).get()
+        return webClient.get(URL)
     }
 
     String getLink(Document documento, String text) {
@@ -40,7 +42,7 @@ class WebCrawler {
                 "Espaço do Prestador de Serviços de Saúde"
         )
 
-        return Jsoup.connect(link).get()
+        return webClient.get(link)
     }
 
     Document acessarTiss() {
@@ -50,14 +52,14 @@ class WebCrawler {
                 "TISS - Padrão para Troca de Informação de Saúde Suplementar"
         )
 
-        return Jsoup.connect(link).get()
+        return webClient.get(link)
     }
 
     Document acessarPadraoTiss() {
         Document documento = acessarTiss()
         String link = getLinkVersaoMaisRecente(documento)
 
-        return Jsoup.connect(link).get()
+        return webClient.get(link)
     }
 
     String getLinkVersaoMaisRecente(Document documento) {
@@ -118,7 +120,7 @@ class WebCrawler {
                 "Clique aqui para acessar todas as versões dos Componentes"
         )
 
-        return Jsoup.connect(link).get()
+        return webClient.get(link)
     }
 
     Element getTabelaHistorico(Document documento) {
