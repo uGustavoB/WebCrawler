@@ -1,5 +1,6 @@
 package org.uGustavoDev
 
+import org.jsoup.nodes.Document
 import org.uGustavoDev.crawler.WebCrawler
 
 class Main {
@@ -7,5 +8,9 @@ class Main {
         WebCrawler webCrawler = new WebCrawler()
 
         webCrawler.baixarDocumentoDeComunicacao() // Tarefa 1
+
+        Document documento = webCrawler.acessarHistoricoTiss()
+
+        println documento.title()
     }
 }

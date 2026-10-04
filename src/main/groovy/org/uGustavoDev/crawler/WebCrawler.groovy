@@ -103,4 +103,15 @@ class WebCrawler {
 
         println "Arquivo baixado com sucesso: ${arquivo.path}"
     }
+
+    Document acessarHistoricoTiss() {
+        Document documento = acessarTiss()
+
+        String link = getLink(
+                documento,
+                "Clique aqui para acessar todas as versões dos Componentes"
+        )
+
+        return Jsoup.connect(link).get()
+    }
 }
