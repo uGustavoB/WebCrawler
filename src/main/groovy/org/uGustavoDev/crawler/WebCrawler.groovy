@@ -6,6 +6,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
+import org.uGustavoDev.exporter.CsvExporter
 import org.uGustavoDev.model.VersaoTiss
 
 import java.time.YearMonth
@@ -206,10 +207,14 @@ class WebCrawler {
     void obterHistoricoTiss() {
         List<VersaoTiss> versoes = extrairVersoesTiss()
 
-        List<VersaoTiss> versoesFiltradas = filtrarVersoesDesde2016(versoes)
+        List<VersaoTiss> versoesFiltradas =
+                filtrarVersoesDesde2016(versoes)
 
-        versoesFiltradas.each { VersaoTiss versao ->
-            println "${versao.competencia} | ${versao.publicacao} | ${versao.inicioVigencia}"
-        }
+        CsvExporter exporter = new CsvExporter()
+
+        exporter.exportar(
+                versoesFiltradas,
+                "${PATH}/historico_versoes_tiss.csv"
+        )
     }
 }
