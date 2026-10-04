@@ -87,9 +87,13 @@ class Main {
                     def interessado =
                             ConsoleUI.pedirEmailInteressado()
 
-                    service.cadastrar(interessado)
+                    try {
+                        service.cadastrar(interessado)
+                        println "Interessado cadastrado com sucesso!"
+                    } catch (IllegalArgumentException e) {
+                        println e.message
+                    }
 
-                    println "Interessado cadastrado!"
                     ConsoleUI.aguardarContinuacao()
                     break
 

@@ -33,9 +33,17 @@ class EmailInteressadoCsvService {
     void salvar(EmailInteressado interessado) {
         List<EmailInteressado> interessados = listar()
 
+        if (buscarPorEmail(interessado.email, interessados) != null) {
+            throw new IllegalArgumentException("O email ${interessado.email} já está cadastrado.")
+        }
+
         interessados.add(interessado)
 
         salvarTodos(interessados)
+    }
+
+    EmailInteressado buscarPorEmail(String email, List<EmailInteressado> interessados) {
+        interessados.find { it.email.equalsIgnoreCase(email) }
     }
 
     void remover(String email) {
