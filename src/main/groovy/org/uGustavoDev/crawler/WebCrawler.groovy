@@ -89,7 +89,7 @@ class WebCrawler {
         )
     }
 
-    void baixarDocumentoDeComunicacao() {
+    File baixarDocumentoDeComunicacao() {
         String link = getLinkComponenteComunicacao()
 
         File pasta = new File(PATH)
@@ -110,6 +110,7 @@ class WebCrawler {
         }
 
         println "Arquivo baixado com sucesso: ${arquivo.path}"
+        return arquivo
     }
 
     Document acessarHistoricoTiss() {
@@ -240,7 +241,7 @@ class WebCrawler {
         )
     }
 
-    void baixarTabelaDeErros() {
+    File baixarTabelaDeErros() {
         String link = getLinkTabelaErros()
 
         File pasta = new File(PATH)
@@ -261,5 +262,6 @@ class WebCrawler {
         }
 
         println "Arquivo baixado com sucesso: ${arquivo.path}"
+        return arquivo
     }
 }

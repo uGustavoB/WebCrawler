@@ -64,8 +64,8 @@ class ConsoleUI {
         imprimirCabecalho("TISS Crawler")
 
         println "Escolha uma ação:"
-        println "1 - Baixar documentação TISS"
-        println "2 - Enviar histórico por email"
+        println "1 - Gerenciar emails interessados"
+        println "2 - Baixar arquivos e enviar relatório para todos os interessados"
         println "0 - Sair"
 
         return lerEscolha("Sua escolha: ", 0, 2)
