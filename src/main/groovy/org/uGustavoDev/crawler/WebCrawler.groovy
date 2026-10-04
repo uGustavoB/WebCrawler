@@ -5,6 +5,7 @@ import groovyx.net.http.optional.Download
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
+import org.jsoup.select.Elements
 
 class WebCrawler {
 
@@ -113,5 +114,30 @@ class WebCrawler {
         )
 
         return Jsoup.connect(link).get()
+    }
+
+    Element getTabelaHistorico(Document documento) {
+        return documento.select("table").first()
+    }
+
+    Elements getLinhasTabelaHistorico(Element tabela) {
+        return tabela.select("tbody tr")
+    }
+
+    void imprimirDadosHistorico() {
+        Document documento = acessarHistoricoTiss()
+
+        Element tabela = getTabelaHistorico(documento)
+        Elements linhas = getLinhasTabelaHistorico(tabela)
+
+        linhas.each { linha ->
+            Elements colunas = linha.select("td")
+
+            colunas.each { coluna ->
+                print "${coluna.text()} | "
+            }
+
+            println()
+        }
     }
 }

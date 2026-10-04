@@ -9,8 +9,6 @@ class Main {
 
         webCrawler.baixarDocumentoDeComunicacao() // Tarefa 1
 
-        Document documento = webCrawler.acessarHistoricoTiss()
-
-        println documento.title()
+        webCrawler.imprimirDadosHistorico()
     }
 }
