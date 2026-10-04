@@ -2,6 +2,7 @@ package org.uGustavoDev
 
 
 import org.uGustavoDev.crawler.WebCrawler
+import org.uGustavoDev.model.Email
 import org.uGustavoDev.ui.ConsoleUI
 
 class Main {
@@ -17,8 +18,14 @@ class Main {
                     break
 
                 case 2:
-                    String email = ConsoleUI.pedirEmail()
-                    println "Email cadastrado: $email"
+                    Email email = ConsoleUI.pedirEmail()
+
+                    println "\nEmail cadastrado:"
+                    println "Destinatário: ${email.destinatario}"
+                    println "Assunto: ${email.assunto}"
+                    println "Mensagem: ${email.mensagem}"
+
+                    ConsoleUI.aguardarContinuacao()
                     break
 
                 case 0:

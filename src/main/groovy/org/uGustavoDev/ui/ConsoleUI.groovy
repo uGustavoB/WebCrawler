@@ -1,5 +1,7 @@
 package org.uGustavoDev.ui
 
+import org.uGustavoDev.model.Email
+
 class ConsoleUI {
 
     private static final Scanner scanner = new Scanner(System.in)
@@ -68,9 +70,17 @@ class ConsoleUI {
         return lerEscolha("Sua escolha: ", 0, 2)
     }
 
-    static String pedirEmail() {
+    static Email pedirEmail() {
         imprimirCabecalho("Configuração de Email")
 
-        return lerTexto("Email do destinatário: ")
+        String destinatario = lerTexto("Email do destinatário: ")
+        String assunto = lerTexto("Assunto: ")
+        String mensagem = lerTexto("Mensagem: ")
+
+        return new Email(
+                destinatario: destinatario,
+                assunto: assunto,
+                mensagem: mensagem
+        )
     }
 }
