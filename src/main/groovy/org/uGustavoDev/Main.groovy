@@ -3,6 +3,7 @@ package org.uGustavoDev
 
 import org.uGustavoDev.crawler.WebCrawler
 import org.uGustavoDev.model.Email
+import org.uGustavoDev.service.EmailService
 import org.uGustavoDev.ui.ConsoleUI
 
 class Main {
@@ -20,10 +21,8 @@ class Main {
                 case 2:
                     Email email = ConsoleUI.pedirEmail()
 
-                    println "\nEmail cadastrado:"
-                    println "Destinatário: ${email.destinatario}"
-                    println "Assunto: ${email.assunto}"
-                    println "Mensagem: ${email.mensagem}"
+                    EmailService emailService = new EmailService()
+                    emailService.enviar(email)
 
                     ConsoleUI.aguardarContinuacao()
                     break
