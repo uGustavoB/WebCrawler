@@ -1,6 +1,7 @@
 package org.uGustavoDev.ui
 
 import org.uGustavoDev.model.Email
+import org.uGustavoDev.model.EmailInteressado
 
 class ConsoleUI {
 
@@ -83,5 +84,28 @@ class ConsoleUI {
                 mensagem: mensagem,
                 anexos: [arquivo]
         )
+    }
+
+    static EmailInteressado pedirEmailInteressado() {
+        imprimirCabecalho("Cadastrar Interessado")
+
+        String nome = lerTexto("Nome: ")
+        String email = lerTexto("Email: ")
+
+        return new EmailInteressado(
+                nome: nome,
+                email: email
+        )
+    }
+
+    static int pedirOpcaoInteressados() {
+        imprimirCabecalho("Emails Interessados")
+
+        println "1 - Listar"
+        println "2 - Cadastrar"
+        println "3 - Remover"
+        println "0 - Voltar"
+
+        return lerEscolha("Sua escolha: ", 0, 3)
     }
 }
