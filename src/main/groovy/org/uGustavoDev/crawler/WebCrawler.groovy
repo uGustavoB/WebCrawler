@@ -131,20 +131,46 @@ class WebCrawler {
         Element tabela = getTabelaHistorico(documento)
         Elements linhas = getLinhasTabelaHistorico(tabela)
 
+        Map<String, Integer> indices = getIndicesColunas(tabela)
+
         List<VersaoTiss> versoes = []
 
         linhas.each { linha ->
             Elements colunas = linha.select("td")
 
             VersaoTiss versao = new VersaoTiss(
-                    competencia: colunas.get(0).text(),
-                    publicacao: colunas.get(1).text(),
-                    inicioVigencia: colunas.get(2).text()
+                    competencia: colunas.get(indices.competencia).text(),
+                    publicacao: colunas.get(indices.publicacao).text(),
+                    inicioVigencia: colunas.get(indices.inicioVigencia).text()
             )
 
             versoes.add(versao)
         }
 
         return versoes
+    }
+
+    Map<String, Integer> getIndicesColunas(Element tabela) {
+        Elements cabecalho = tabela.select("thead tr").first().select("th")
+
+        Map<String, Integer> indices = [:]
+
+        cabecalho.eachWithIndex { Element coluna, int indice ->
+            String nome = coluna.text().toLowerCase()
+
+            if (nome.contains("competência")) {
+                indices.competencia = indice
+            }
+
+            if (nome.contains("publicação")) {
+                indices.publicacao = indice
+            }
+
+            if (nome.contains("início de vigência")) {
+                indices.inicioVigencia = indice
+            }
+        }
+
+        return indices
     }
 }
