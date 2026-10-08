@@ -34,18 +34,6 @@ class Main {
                     break
 
                 case 2:
-                    File arquivoHistorico = webCrawler.obterHistoricoTiss()
-
-                    Email email = ConsoleUI.pedirEmailComHistorico(
-                            arquivoHistorico
-                    )
-
-                    emailService.enviar(email)
-
-                    ConsoleUI.aguardarContinuacao()
-                    break
-
-                case 3:
                     RelatorioService relatorioService = new RelatorioService(webCrawler, emailService, interessadoService)
                     relatorioService.baixarEEnviarParaInteressados()
                     ConsoleUI.aguardarContinuacao()
