@@ -4,92 +4,60 @@ import com.opencsv.CSVReader
 import com.opencsv.CSVWriter
 import org.uGustavoDev.model.EmailInteressado
 
+import java.nio.charset.StandardCharsets
+
 class EmailInteressadoCsvService {
-    private final File arquivo = new File("downloads/emails_interessados.csv")
+
+    private static final String CAMINHO_PADRAO = "downloads/emails_interessados.csv"
+    private static final String[] CABECALHO = ["Nome", "Email"] as String[]
+
+    private final File arquivo
+
+    EmailInteressadoCsvService(String caminhoArquivo = CAMINHO_PADRAO) {
+        this.arquivo = new File(caminhoArquivo)
+    }
 
     List<EmailInteressado> listar() {
         if (!arquivo.exists()) {
             return []
         }
 
-        arquivo.withReader { reader ->
-            CSVReader csvReader = new CSVReader(reader)
+        return arquivo.withReader(StandardCharsets.UTF_8.name()) { Reader reader ->
+            new CSVReader(reader).withCloseable { CSVReader csvReader ->
+                List<String[]> linhas = csvReader.readAll()
+                if (linhas.size() <= 1) {
+                    return []
+                }
 
-            List<String[]> linhas = csvReader.readAll()
-
-            if (linhas.isEmpty()) {
-                return []
+                return linhas.drop(1)
+                        .findAll { String[] linha -> linha.length >= 2 }
+                        .collect { String[] linha ->
+                            new EmailInteressado(
+                                    nome: linha[0].trim(),
+                                    email: linha[1].trim()
+                            )
+                        }
             }
+        }
+    }
 
-            return linhas.drop(1).collect { linha ->
-                new EmailInteressado(
-                        nome: linha[0],
-                        email: linha[1]
-                )
+    void salvarTodos(List<EmailInteressado> interessados) {
+        File pasta = arquivo.parentFile
+        if (pasta != null && !pasta.exists()) {
+            pasta.mkdirs()
+        }
+
+        arquivo.withWriter(StandardCharsets.UTF_8.name()) { Writer writer ->
+            new CSVWriter(writer).withCloseable { CSVWriter csvWriter ->
+                csvWriter.writeNext(CABECALHO)
+
+                interessados.each { EmailInteressado interessado ->
+                    csvWriter.writeNext([
+                            interessado.nome,
+                            interessado.email
+                    ] as String[])
+                }
             }
-        }
-    }
-
-    void salvar(EmailInteressado interessado) {
-        List<EmailInteressado> interessados = listar()
-
-        if (buscarPorEmail(interessado.email, interessados) != null) {
-            throw new IllegalArgumentException("O email ${interessado.email} já está cadastrado.")
-        }
-
-        interessados.add(interessado)
-
-        salvarTodos(interessados)
-    }
-
-    EmailInteressado buscarPorEmail(String email, List<EmailInteressado> interessados) {
-        interessados.find { it.email.equalsIgnoreCase(email) }
-    }
-
-    void remover(String email) {
-        List<EmailInteressado> interessados = listar()
-
-        interessados.removeAll {
-            it.email.equalsIgnoreCase(email)
-        }
-
-        salvarTodos(interessados)
-    }
-
-    void editar(String emailOriginal, EmailInteressado novosDados) {
-        List<EmailInteressado> interessados = listar()
-
-        def interessado = buscarPorEmail(emailOriginal, interessados)
-        if (interessado == null) {
-            throw new IllegalArgumentException("O email ${emailOriginal} não foi encontrado.")
-        }
-
-        if (!emailOriginal.equalsIgnoreCase(novosDados.email) && buscarPorEmail(novosDados.email, interessados) != null) {
-            throw new IllegalArgumentException("O email ${novosDados.email} já está cadastrado para outro interessado.")
-        }
-
-        interessado.nome = novosDados.nome
-        interessado.email = novosDados.email
-
-        salvarTodos(interessados)
-    }
-
-    private void salvarTodos(List<EmailInteressado> interessados) {
-        arquivo.parentFile.mkdirs()
-
-        arquivo.withWriter { writer ->
-            CSVWriter csvWriter = new CSVWriter(writer)
-
-            csvWriter.writeNext(["Nome", "Email"] as String[])
-
-            interessados.each {
-                csvWriter.writeNext([
-                        it.nome,
-                        it.email
-                ] as String[])
-            }
-
-            csvWriter.close()
         }
     }
 }

@@ -1,16 +1,26 @@
 package org.uGustavoDev.ui
 
-import org.uGustavoDev.model.Email
 import org.uGustavoDev.model.EmailInteressado
+
+import java.nio.charset.StandardCharsets
 
 class ConsoleUI {
 
-    private static final Scanner scanner = new Scanner(System.in)
+    private static final String SEPARADOR = "========================================"
+    private static final Scanner SCANNER = new Scanner(System.in, StandardCharsets.UTF_8.name())
 
     static void imprimirCabecalho(String titulo) {
-        println "\n========================================"
+        println "\n${SEPARADOR}"
         println "  ${titulo.toUpperCase()}"
-        println "========================================"
+        println SEPARADOR
+    }
+
+    static void exibirMensagem(String mensagem) {
+        println mensagem
+    }
+
+    static void exibirErro(String mensagem) {
+        println "[ERRO] ${mensagem}"
     }
 
     static void limparTela() {
@@ -20,18 +30,17 @@ class ConsoleUI {
 
     static void aguardarContinuacao() {
         println "\nPressione Enter para continuar..."
-        scanner.nextLine()
+        SCANNER.nextLine()
         limparTela()
     }
 
     static String lerTexto(String mensagem, boolean permiteVazio = false) {
         while (true) {
             print mensagem
-
-            String entrada = scanner.nextLine()
+            String entrada = SCANNER.nextLine()
 
             if (!permiteVazio && entrada.trim().isEmpty()) {
-                println "Este campo não pode ser vazio. Tente novamente."
+                exibirErro("Este campo não pode ser vazio. Tente novamente.")
                 continue
             }
 
@@ -42,20 +51,16 @@ class ConsoleUI {
     static int lerEscolha(String mensagem, int min, int max) {
         while (true) {
             print mensagem
-
-            String entrada = scanner.nextLine()
+            String entrada = SCANNER.nextLine().trim()
 
             try {
                 int escolha = Integer.parseInt(entrada)
-
                 if (escolha >= min && escolha <= max) {
                     return escolha
                 }
-
-                println "Opção inválida. Escolha entre $min e $max."
-
+                exibirErro("Opção inválida. Escolha entre $min e $max.")
             } catch (NumberFormatException ignored) {
-                println "Entrada inválida. Digite um número."
+                exibirErro("Entrada inválida. Digite um número.")
             }
         }
     }
@@ -69,21 +74,6 @@ class ConsoleUI {
         println "0 - Sair"
 
         return lerEscolha("Sua escolha: ", 0, 2)
-    }
-
-    static Email pedirEmailComHistorico(File arquivo) {
-        imprimirCabecalho("Envio do Histórico TISS")
-
-        String destinatario = lerTexto("Email do destinatário: ")
-        String assunto = lerTexto("Assunto: ")
-        String mensagem = lerTexto("Mensagem: ")
-
-        return new Email(
-                destinatario: destinatario,
-                assunto: assunto,
-                mensagem: mensagem,
-                anexos: [arquivo]
-        )
     }
 
     static EmailInteressado pedirEmailInteressado() {

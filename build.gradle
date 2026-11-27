@@ -24,6 +24,10 @@ dependencies {
     implementation 'org.slf4j:slf4j-simple:1.7.36'
     implementation 'com.sun.mail:jakarta.mail:2.0.1'
     implementation 'io.github.cdimascio:dotenv-java:3.2.0'
+
+    testImplementation platform('org.spockframework:spock-bom:2.3-groovy-3.0')
+    testImplementation 'org.spockframework:spock-core'
+    testImplementation 'net.bytebuddy:byte-buddy:1.14.19'
 }
 
 test {

@@ -6,6 +6,8 @@ import org.uGustavoDev.model.EmailInteressado
 
 class RelatorioService {
 
+    private static final String ASSUNTO_RELATORIO = "Relatório Atualizado - Padrão TISS"
+
     private final WebCrawler webCrawler
     private final EmailService emailService
     private final EmailInteressadoService interessadoService
@@ -16,30 +18,35 @@ class RelatorioService {
         this.interessadoService = interessadoService
     }
 
-    void baixarEEnviarParaInteressados() {
-        println "Baixando arquivos atualizados..."
+    int baixarEEnviarParaInteressados() {
+        List<EmailInteressado> interessados = interessadoService.listar()
+        if (interessados.isEmpty()) {
+            return 0
+        }
+
+        List<File> anexos = coletarArquivosAtualizados()
+
+        interessados.each { EmailInteressado interessado ->
+            Email emailRelatorio = criarEmailRelatorio(interessado, anexos)
+            emailService.enviar(emailRelatorio)
+        }
+
+        return interessados.size()
+    }
+
+    private List<File> coletarArquivosAtualizados() {
         File arqComunicacao = webCrawler.baixarDocumentoDeComunicacao()
         File arqErros = webCrawler.baixarTabelaDeErros()
         File arqHistorico = webCrawler.obterHistoricoTiss()
-        
-        List<File> anexos = [arqComunicacao, arqErros, arqHistorico]
-        
-        List<EmailInteressado> interessados = interessadoService.listar()
-        if (interessados.isEmpty()) {
-            println "Nenhum interessado cadastrado. Cadastre interessados na opção 1."
-            return
-        }
+        return [arqComunicacao, arqErros, arqHistorico]
+    }
 
-        interessados.each { interessado ->
-            println "Enviando relatório para ${interessado.nome} (${interessado.email})..."
-            Email emailRelatorio = new Email(
+    private Email criarEmailRelatorio(EmailInteressado interessado, List<File> anexos) {
+        return new Email(
                 destinatario: interessado.email,
-                assunto: "Relatório Atualizado - Padrão TISS",
+                assunto: ASSUNTO_RELATORIO,
                 mensagem: "Olá ${interessado.nome},\n\nSegue em anexo o relatório mais recente contendo o componente de comunicação, tabela de erros e histórico de versões do Padrão TISS.\n\nAtenciosamente,\nRobô Crawler",
                 anexos: anexos
-            )
-            emailService.enviar(emailRelatorio)
-        }
-        println "Relatórios enviados com sucesso!"
+        )
     }
 }
